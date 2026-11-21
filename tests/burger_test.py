@@ -4,7 +4,7 @@ class TestBurger:
 
 
     def test_init_true(self,burger):
-        assert burger.bun == None and burger.ingredients == []
+        assert vars(burger) == {'bun':None,'ingredients':[]}
 
     def test_set_buns(self,burger,mock_bun):
         burger.set_buns(mock_bun)
@@ -28,15 +28,22 @@ class TestBurger:
     def test_get_price(self,burger,mock_bun,mock_ingredient):
         burger.set_buns(mock_bun)
         burger.add_ingredient(mock_ingredient)
-        assert burger.get_price() == 2810
+        assert burger.get_price() == mock_bun.get_price() * 2 + mock_ingredient.get_price()
 
-    def test_get_receipt(self,burger,mock_bun,mock_ingredient,mock_ingredient_1):
+    def test_get_receipt(self,burger,mock_bun,mock_ingredient_1):
         burger.set_buns(mock_bun)
-        burger.add_ingredient(mock_ingredient)
         burger.add_ingredient(mock_ingredient_1)
         burger.get_price()
         receipt = burger.get_receipt()
-        assert 'Краторная булка N-200i' in receipt and '2900' in receipt
+        bun = mock_bun.get_name()
+        ingredient = mock_ingredient_1.get_name()
+        name_ingredient = mock_ingredient_1.get_type().lower()
+        total = mock_bun.get_price() * 2 + mock_ingredient_1.get_price()
+        my_receipt = (f'(==== {bun} ====)\n'
+        f'= {name_ingredient} {ingredient} =\n'
+        f'(==== {bun} ====)\n\n'
+        f'Price: {total}')
+        assert receipt == my_receipt
 
 
         
